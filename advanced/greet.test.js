@@ -1,41 +1,44 @@
 const greet = require("./greet");
 
-const RealDate = Date;
+console.log = jest.fn();
 
-it("tests that with theese parameters the result should be: Heyho!", () => {
-  global.Date.now = jest.fn(() => new Date("2021-01-01T08:00:00Z").getTime());
-  expect(greet(20)).toBe("Heyho!");
-  global.Date = RealDate;
+afterEach(() => {
+  jest.useRealTimers();
+  jest.clearAllMocks();
 });
 
-// beforeEach(() => {
-// 	jest.spyOn(Date.prototype, 'getDay').mockReturnValue(2);
-// 	jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2000-01-01T00:00:00.000Z');
-// });
-// afterEach(() => {
-// 	jest.restoreAll()
-// });
+it("tests that with theese parameters the result should be: Heyho!", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T06:00").getTime());
+  greet(20);
+  expect(console.log).toHaveBeenCalledWith("Heyho!");
+});
 
-// const getCurrentDate = () => new Date();
-// test('It should create new date', () => {
-//   jest
-//     .spyOn(global, 'Date')
-//     .mockImplementationOnce(() => new Date('2019-05-14T11:01:58.135Z'));
-//   expect(getCurrentDate()).toEqual(new Date('2019-05-14T11:01:58.135Z'));
-// });
+it("tests that with theese parameters the result should be: Hello...", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T20:00").getTime());
+  greet(20);
+  expect(console.log).toHaveBeenCalledWith("Hello...");
+});
 
-// const RealDate = Date.now
-// beforeAll(() => {
-//   global.Date.now = jest.fn(() => new Date('2019-04-07T10:20:30Z').getTime())
-// })
-// afterAll(() => {
-//   global.Date.now = RealDate
-// })
+it("tests that with theese parameters the result should be: Good morning", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T06:00").getTime());
+  greet(40);
+  expect(console.log).toHaveBeenCalledWith("Good morning");
+});
 
-// const RealDate = Date;
-// beforeEach(() => {
-//   global.Date.now = jest.fn(() => new Date('2019-04-22T10:20:30Z').getTime());
-// });
-// afterEach(() => {
-//   global.Date = RealDate;
-// });
+it("tests that with theese parameters the result should be: Good evening", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T20:00").getTime());
+  greet(40);
+  expect(console.log).toHaveBeenCalledWith("Good evening");
+});
+
+it("tests that with theese parameters the result should be: Hi", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T12:00").getTime());
+  greet(20);
+  expect(console.log).toHaveBeenCalledWith("Hi");
+});
+
+it("tests that with theese parameters the result should be: Good day", () => {
+  jest.useFakeTimers("modern").setSystemTime(new Date("2021-01-01T12:00").getTime());
+  greet(40);
+  expect(console.log).toHaveBeenCalledWith("Good day");
+});
